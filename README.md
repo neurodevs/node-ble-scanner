@@ -54,7 +54,7 @@ BleScannerImpl.Class = SpyBleScanner
 const scanner = BleScannerImpl.Create()
 ```
 
-If you use the `SpyBleScanner` test double (or any other test double you create which extends `BleScannerImpl`), then it will use the real `noble` library unless otherwise set, which is an open-source package that manages the undlying Bluetooth connection.
+If you use the `SpyBleScanner` test double (or any other test double you create which extends `BleScannerImpl`), then it will use the real `noble` library unless otherwise set, which is an open-source package that manages the lower-level Bluetooth connection.
 
 You can also fake `noble` so that you do not require actual BLE hardware in your tests:
 
