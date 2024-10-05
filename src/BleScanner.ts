@@ -51,10 +51,10 @@ export default class BleScannerImpl implements BleScanner {
         this.isScanning = true
         this.uuids = uuids ?? []
 
-        return this.createStartPromise()
+        return this.createStartScanningPromise()
     }
 
-    private createStartPromise() {
+    private createStartScanningPromise() {
         return new Promise((resolve, reject) => {
             this.resolvePromise = resolve
             this.noble.startScanningAsync([], false).catch(reject)
