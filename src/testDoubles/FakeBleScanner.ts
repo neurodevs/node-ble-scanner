@@ -5,30 +5,30 @@ import { BleScanner } from '../BleScanner'
 export default class FakeBleScanner implements BleScanner {
     public callsToScanForPeripherals: string[][] = []
 
-    private fakedPeripherals: Peripheral[] = []
+    private static fakedPeripherals: Peripheral[] = []
 
     public async scanForPeripherals(uuids: string[]) {
         this.callsToScanForPeripherals.push(uuids)
         return this.fakedPeripherals
     }
 
-    public setFakedPeripherals(uuids?: string[]) {
+    public static setFakedPeripherals(uuids?: string[]) {
         this.fakedPeripherals = this.createFakePeripherals(
             uuids ?? this.generateRandomUuids()
         )
     }
 
-    private generateRandomUuids(num = 1) {
-        return Array.from({ length: num }, () => generateId())
-    }
-
-    public createFakePeripherals(uuids: string[]) {
+    public static createFakePeripherals(uuids: string[]) {
         return uuids.map((uuid) => {
             return this.createFakePeripheral(uuid)
         })
     }
 
-    public createFakePeripheral(uuid?: string) {
+    public static generateRandomUuids(num = 1) {
+        return Array.from({ length: num }, () => generateId())
+    }
+
+    public static createFakePeripheral(uuid?: string) {
         return {
             uuid: uuid ?? generateId(),
             advertisement: {
@@ -38,5 +38,9 @@ export default class FakeBleScanner implements BleScanner {
             rssi: Math.random() * 100,
             connectable: true,
         } as Peripheral
+    }
+
+    private get fakedPeripherals() {
+        return FakeBleScanner.fakedPeripherals
     }
 }
