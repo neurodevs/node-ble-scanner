@@ -47,11 +47,20 @@ export default class BleScannerImpl implements BleScanner {
         return new (this.Class ?? this)()
     }
 
-    public async scanForPeripherals(uuids: string[]) {
+    public async scanForPeripherals(uuids: string[] | string) {
         this.isScanning = true
-        this.uuids = uuids ?? []
+        this.uuids = this.formatUuids(uuids)
 
         return this.createStartScanningPromise()
+    }
+
+    private formatUuids(uuids: string | string[]) {
+        switch (typeof uuids) {
+            case 'string':
+                return [uuids]
+            case 'object':
+                return uuids
+        }
     }
 
     private createStartScanningPromise() {
