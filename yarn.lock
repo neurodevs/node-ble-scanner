@@ -751,39 +751,39 @@
   dependencies:
     "@sinonjs/commons" "^3.0.0"
 
-"@sprucelabs/error@^6.0.441":
-  version "6.0.441"
-  resolved "https://registry.yarnpkg.com/@sprucelabs/error/-/error-6.0.441.tgz#77558d879946286f0837047a9828ebb78f766c14"
-  integrity sha512-jqDv9D8XO1CqXH+TrQuqRsTXV1LOu9HXktrn08r1T6erXsa4DVgq1SlC/nhUjiACrA2e629CtHseoiTYJzsD0w==
+"@sprucelabs/error@^6.0.442":
+  version "6.0.442"
+  resolved "https://registry.yarnpkg.com/@sprucelabs/error/-/error-6.0.442.tgz#671f1c0b39a27545c0c2f2bfc37e98b1727ff6d7"
+  integrity sha512-r3nYb+sEIzp9KNHdQYtDEM6fGxIFD/idhK7AZ+yBFeamGxSau7ABVTpz5dfu7Y6HiWzJe+iBmbDpyF2lrz9fug==
 
-"@sprucelabs/globby@^2.0.402":
-  version "2.0.402"
-  resolved "https://registry.yarnpkg.com/@sprucelabs/globby/-/globby-2.0.402.tgz#b243ea12544b1a36856044eca2062bdf2e55ae99"
-  integrity sha512-lluur6agNVB5EZN/34wZuEB6kkH1PqZQVvCbYXCzDVvdPXIbGEKIoAI0kUq7ihyEm+wr3Y5EmRw7hzNs455byg==
+"@sprucelabs/globby@^2.0.403":
+  version "2.0.403"
+  resolved "https://registry.yarnpkg.com/@sprucelabs/globby/-/globby-2.0.403.tgz#037f84a1a9b8d08ba54a0554183685b3e967bc56"
+  integrity sha512-LTqGMzwLeSSaR0kKRKhsrmO/ek4P973L72CXZlbLTy3H7unO9xdwMZWO3FDz9e13Sn3dMHQ8oa3mShdKjcIWKg==
   dependencies:
     globby "^11.0.4"
 
 "@sprucelabs/jest-json-reporter@^8.0.436":
-  version "8.0.441"
-  resolved "https://registry.yarnpkg.com/@sprucelabs/jest-json-reporter/-/jest-json-reporter-8.0.441.tgz#ab2a4aca8bc573d520cfd62c6b34520d4a0b808e"
-  integrity sha512-rH834LXZe11fIfjx7W8eH0edWnocurlYxPKF23Ev5YVmmHJO4adZR5ZjsoomCMJfw149Tz3j9a2opCw64DE3TQ==
+  version "8.0.442"
+  resolved "https://registry.yarnpkg.com/@sprucelabs/jest-json-reporter/-/jest-json-reporter-8.0.442.tgz#3d4375ea8e3fc4e62dc10ce1570533890603e778"
+  integrity sha512-DaCpXP253NgN6DsEHAbq1XWpVqYu9FzZz1wdcZyjktJAhZx7VqeIDgOyFffZfXfY1InS01uYmGXRUnZkjHWdOA==
 
 "@sprucelabs/resolve-path-aliases@^2.0.415":
-  version "2.0.420"
-  resolved "https://registry.yarnpkg.com/@sprucelabs/resolve-path-aliases/-/resolve-path-aliases-2.0.420.tgz#ae2b4972e011bb764b6e0e28cba8af8c52d1632f"
-  integrity sha512-ODb+B+J3ZXf76yCcfaPRInXwlxyxE/ozRT/No4QRBJb0BYpsAW8r5haF7Qi1sRd7Cww9ZcvR9wuplH3hGmRULw==
+  version "2.0.421"
+  resolved "https://registry.yarnpkg.com/@sprucelabs/resolve-path-aliases/-/resolve-path-aliases-2.0.421.tgz#87bdffdec0556188e0ca858e4b737744a16d316f"
+  integrity sha512-XOrzz36Xe/hF2z75PKzayw5HG7mERsp6HrYtfbXOMmIulcbDaNaTtz6Miri6ihqLdDfySUKYas7gaLROP0BntA==
   dependencies:
-    "@sprucelabs/globby" "^2.0.402"
+    "@sprucelabs/globby" "^2.0.403"
     chalk "^4.1.2"
     tsconfig-paths "^4.2.0"
     yargs "^17.7.2"
 
 "@sprucelabs/test-utils@^5.1.386":
-  version "5.1.390"
-  resolved "https://registry.yarnpkg.com/@sprucelabs/test-utils/-/test-utils-5.1.390.tgz#aa72ccd0b3a314a6554f7ae8c87829ae875fec76"
-  integrity sha512-m9KaELEv/+Es7JM2RBQ2nc2bR2EcaQD1H6LL8xQpDAU0eTicRxKAV7fKUAYvH+jBCFTKicYq2uMfKTes9LmlsA==
+  version "5.1.391"
+  resolved "https://registry.yarnpkg.com/@sprucelabs/test-utils/-/test-utils-5.1.391.tgz#15b6c1120644f4e11a730ae5bab673ad8739e3ce"
+  integrity sha512-RpU68xoUOLmfYPUEcUac8YDZKc4ti3zvSudhbw9Zqsny8u8XQnMrcOGvxZ0E0JB7AxB/MHRcneCwAM8UWmxpMw==
   dependencies:
-    "@sprucelabs/error" "^6.0.441"
+    "@sprucelabs/error" "^6.0.442"
     deep-equal "^2.2.3"
     just-clone "^6.2.0"
     lodash "^4.17.21"
