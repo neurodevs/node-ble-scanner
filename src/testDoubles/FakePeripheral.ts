@@ -27,7 +27,7 @@ export default class FakePeripheral implements SimplePeripheral {
         this.didCallConnectAsync = true
     }
 
-    public resetTestDoubl() {
+    public resetTestDouble() {
         this.didCallConnect = false
         this.didCallConnectAsync = false
     }
