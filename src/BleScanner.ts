@@ -7,7 +7,8 @@ export default class BleScannerImpl implements BleScanner {
     protected isScanning = false
     private peripherals: Peripheral[] = []
     private uuids: string[] = []
-    private resolvePromise?: (peripherals: Peripheral[]) => void
+    private resolvePromise?: (peripherals: Peripheral[] | Peripheral) => void
+    private resolveType!: string[] | string
 
     protected constructor() {
         this.setupOnDiscover()
@@ -39,8 +40,15 @@ export default class BleScannerImpl implements BleScanner {
 
     private async stopScanning() {
         await this.noble.stopScanningAsync()
-        this.resolvePromise?.(this.peripherals)
+        const result = this.formatResult()
+        this.resolvePromise?.(result)
         this.isScanning = false
+    }
+
+    private formatResult() {
+        return this.resolveType === 'string'
+            ? this.peripherals[0]
+            : this.peripherals
     }
 
     public static Create() {
@@ -57,8 +65,10 @@ export default class BleScannerImpl implements BleScanner {
     private formatUuids(uuids: string | string[]) {
         switch (typeof uuids) {
             case 'string':
+                this.resolveType = 'string'
                 return [uuids]
             case 'object':
+                this.resolveType = 'array'
                 return uuids
         }
     }
@@ -67,7 +77,7 @@ export default class BleScannerImpl implements BleScanner {
         return new Promise((resolve, reject) => {
             this.resolvePromise = resolve
             this.noble.startScanningAsync([], false).catch(reject)
-        }) as Promise<Peripheral[]>
+        }) as Promise<Peripheral[] | Peripheral>
     }
 
     private get noble() {
@@ -76,7 +86,9 @@ export default class BleScannerImpl implements BleScanner {
 }
 
 export interface BleScanner {
-    scanForPeripherals(uuids: string[]): Promise<Peripheral[]>
+    scanForPeripherals(
+        uuids: string[] | string
+    ): Promise<Peripheral[] | Peripheral>
 }
 
 export type BleScannerConstructor = new () => BleScanner

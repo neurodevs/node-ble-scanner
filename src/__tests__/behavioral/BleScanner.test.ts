@@ -106,6 +106,11 @@ export default class BleScannerTest extends AbstractSpruceTest {
     protected static async scanForPeripheralsReturnsPeripherals() {
         const peripherals = await this.scanForPeripherals()
 
+        assert.isArray(
+            peripherals,
+            'scanForPeripherals should return an array!'
+        )
+
         assert.isLength(
             peripherals,
             1,
@@ -131,7 +136,12 @@ export default class BleScannerTest extends AbstractSpruceTest {
 
     @test()
     protected static async scanForPeripheralsAcceptsStringUuid() {
-        await this.scanForPeripherals(this.uuid)
+        const peripheral = await this.scanForPeripherals(this.uuid)
+        this.log(JSON.stringify(peripheral))
+        assert.isFalse(
+            peripheral instanceof Array,
+            'scanForPeripherals should return a single peripheral when passed a string uuid!'
+        )
     }
 
     private static setupFakeNoble() {
@@ -147,17 +157,7 @@ export default class BleScannerTest extends AbstractSpruceTest {
     private static async scanForPeripherals(
         uuids: string[] | string = this.uuids
     ) {
-        const formattedUuids = this.formatUuids(uuids)
-        return await this.instance.scanForPeripherals(formattedUuids)
-    }
-
-    private static formatUuids(uuids: string | string[]) {
-        switch (typeof uuids) {
-            case 'string':
-                return [uuids] as string[]
-            case 'object':
-                return uuids as string[]
-        }
+        return await this.instance.scanForPeripherals(uuids)
     }
 
     private static get uuids() {
