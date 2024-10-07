@@ -1,6 +1,9 @@
 import { generateId } from '@sprucelabs/test-utils'
 
-export default class FakePeripheral {
+export default class FakePeripheral implements SimplePeripheral {
+    public didCallConnect = false
+    public didCallConnectAsync = false
+
     public uuid: string
 
     public advertisement = {
@@ -15,4 +18,29 @@ export default class FakePeripheral {
     public constructor(uuid?: string) {
         this.uuid = uuid ?? generateId()
     }
+
+    public connect() {
+        this.didCallConnect = true
+    }
+
+    public async connectAsync() {
+        this.didCallConnectAsync = true
+    }
+
+    public resetTestDoubl() {
+        this.didCallConnect = false
+        this.didCallConnectAsync = false
+    }
+}
+
+export interface SimplePeripheral {
+    uuid: string
+    advertisement: {
+        localName: string
+        manufacturerData: Buffer
+    }
+    rssi: number
+    connectable: boolean
+    connect(): void
+    connectAsync(): Promise<void>
 }

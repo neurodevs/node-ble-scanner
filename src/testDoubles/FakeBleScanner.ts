@@ -30,7 +30,7 @@ export default class FakeBleScanner implements BleScanner {
     }
 
     public static createFakePeripheral(uuid?: string) {
-        return new FakePeripheral(uuid) as Peripheral
+        return new FakePeripheral(uuid) as unknown as Peripheral
     }
 
     private get fakedPeripherals() {
