@@ -89,9 +89,8 @@ export default class BleScannerImpl implements BleScanner {
 }
 
 export interface BleScanner {
-    scanForPeripherals(
-        uuids: string[] | string
-    ): Promise<Peripheral[] | Peripheral>
+    scanForPeripherals(uuids: string[]): Promise<Peripheral[]>
+    scanForPeripherals(uuids: string): Promise<Peripheral>
 }
 
 export type BleScannerConstructor = new () => BleScanner

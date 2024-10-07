@@ -8,6 +8,9 @@ export default class FakeBleScanner implements BleScanner {
 
     public static fakedPeripherals: FakePeripheral[] = []
 
+    public async scanForPeripherals(uuids: string): Promise<Peripheral>
+    public async scanForPeripherals(uuids: string[]): Promise<Peripheral[]>
+
     public async scanForPeripherals(uuids: string[] | string) {
         this.callsToScanForPeripherals.push(uuids)
 
