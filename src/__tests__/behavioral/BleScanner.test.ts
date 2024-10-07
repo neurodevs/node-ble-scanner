@@ -30,7 +30,7 @@ export default class BleScannerTest extends AbstractSpruceTest {
     }
 
     @test()
-    protected static async setsUpOnDiscoverForNoble() {
+    protected static async createSetsUpOnDiscoverForNoble() {
         assert.isEqual(
             this.noble.callsToOn.length,
             1,
@@ -52,7 +52,7 @@ export default class BleScannerTest extends AbstractSpruceTest {
     }
 
     @test()
-    protected static async scanForPeripheralsSetsIsScanningTrue() {
+    protected static async scanSetsIsScanningTrue() {
         assert.isFalse(
             this.instance.getIsScanning(),
             'noble.isScanning should be false before calling scanForPeripherals!'
@@ -68,7 +68,7 @@ export default class BleScannerTest extends AbstractSpruceTest {
     }
 
     @test()
-    protected static async scanForPeripheralsCallsStartScanningAsync() {
+    protected static async scanCallsStartScanningAsync() {
         await this.scanForPeripherals()
 
         assert.isTrue(
@@ -93,7 +93,7 @@ export default class BleScannerTest extends AbstractSpruceTest {
     }
 
     @test()
-    protected static async scanForPeripheralsSetsIsScanningFalseOnceAllUuidsAreFound() {
+    protected static async scanSetsIsScanningFalseOnceAllUuidsFound() {
         await this.scanForPeripherals()
 
         assert.isFalse(
@@ -103,7 +103,7 @@ export default class BleScannerTest extends AbstractSpruceTest {
     }
 
     @test()
-    protected static async scanForPeripheralsReturnsPeripherals() {
+    protected static async scanReturnsPeripherals() {
         const peripherals = await this.scanForPeripherals()
 
         assert.isArray(
@@ -125,7 +125,7 @@ export default class BleScannerTest extends AbstractSpruceTest {
     }
 
     @test()
-    protected static async scanForPeripheralsCallsStopScanningWhenDone() {
+    protected static async scanCallsStopScanningWhenDone() {
         await this.scanForPeripherals()
 
         assert.isTrue(
@@ -135,9 +135,9 @@ export default class BleScannerTest extends AbstractSpruceTest {
     }
 
     @test()
-    protected static async scanForPeripheralsAcceptsStringUuid() {
+    protected static async scanTakesStringUuidAndReturnsOnePeripheral() {
         const peripheral = await this.scanForPeripherals(this.uuid)
-        this.log(JSON.stringify(peripheral))
+
         assert.isFalse(
             peripheral instanceof Array,
             'scanForPeripherals should return a single peripheral when passed a string uuid!'

@@ -1,6 +1,7 @@
 import { generateId } from '@sprucelabs/test-utils'
 import { Peripheral } from '@abandonware/noble'
 import { BleScanner } from '../BleScanner'
+import FakePeripheral from './FakePeripheral'
 
 export default class FakeBleScanner implements BleScanner {
     public callsToScanForPeripherals: string[][] = []
@@ -29,15 +30,7 @@ export default class FakeBleScanner implements BleScanner {
     }
 
     public static createFakePeripheral(uuid?: string) {
-        return {
-            uuid: uuid ?? generateId(),
-            advertisement: {
-                localName: generateId(),
-                manufacturerData: Buffer.from([0x01, 0x02, 0x03, 0x04]),
-            },
-            rssi: Math.random() * 100,
-            connectable: true,
-        } as Peripheral
+        return new FakePeripheral(uuid) as Peripheral
     }
 
     private get fakedPeripherals() {
