@@ -157,7 +157,12 @@ export default class BleScannerTest extends AbstractSpruceTest {
     private static async scanForPeripherals(
         uuids: string[] | string = this.uuids
     ) {
-        return await this.instance.scanForPeripherals(uuids)
+        switch (typeof uuids) {
+            case 'string':
+                return await this.instance.scanForPeripherals(uuids)
+            case 'object':
+                return await this.instance.scanForPeripherals(uuids)
+        }
     }
 
     private static get uuids() {
