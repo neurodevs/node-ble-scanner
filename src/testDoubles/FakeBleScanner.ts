@@ -4,26 +4,25 @@ import { BleScanner } from '../BleScanner'
 import FakePeripheral from './FakePeripheral'
 
 export default class FakeBleScanner implements BleScanner {
-    public callsToScanForPeripherals: (string[] | string)[] = []
-
     public static fakedPeripherals: FakePeripheral[] = []
 
-    public async scanForPeripherals(uuids: string): Promise<Peripheral>
-    public async scanForPeripherals(uuids: string[]): Promise<Peripheral[]>
+    public callsToScanForPeripheral: string[] = []
+    public callsToScanForPeripherals: string[][] = []
 
-    public async scanForPeripherals(uuids: string[] | string) {
+    public async scanForPeripheral(uuid: string) {
+        this.callsToScanForPeripheral.push(uuid)
+
+        return this.fakedPeripherals.find(
+            (peripheral) => peripheral.uuid === uuid
+        ) as unknown as Peripheral
+    }
+
+    public async scanForPeripherals(uuids: string[]) {
         this.callsToScanForPeripherals.push(uuids)
 
-        switch (typeof uuids) {
-            case 'string':
-                return this.fakedPeripherals.find(
-                    (peripheral) => peripheral.uuid === uuids
-                ) as unknown as Peripheral
-            case 'object':
-                return this.fakedPeripherals.filter((peripheral) =>
-                    (uuids as string[]).includes(peripheral.uuid)
-                ) as unknown as Peripheral[]
-        }
+        return this.fakedPeripherals.filter((peripheral) =>
+            uuids.includes(peripheral.uuid)
+        ) as unknown as Peripheral[]
     }
 
     public static setFakedPeripherals(uuids?: string[]) {

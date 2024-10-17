@@ -7,8 +7,7 @@ export default class BleScannerImpl implements BleScanner {
     protected isScanning = false
     private peripherals: Peripheral[] = []
     private uuids: string[] = []
-    private resolvePromise?: (peripherals: Peripheral[] | Peripheral) => void
-    private resolveType!: string[] | string
+    private resolvePromise?: (peripherals: Peripheral[]) => void
 
     protected constructor() {
         this.setupOnDiscover()
@@ -40,47 +39,30 @@ export default class BleScannerImpl implements BleScanner {
 
     private async stopScanning() {
         await this.noble.stopScanningAsync()
-        const result = this.formatResult()
-        this.resolvePromise?.(result)
+        this.resolvePromise?.(this.peripherals)
         this.isScanning = false
-    }
-
-    private formatResult() {
-        return this.resolveType === 'string'
-            ? this.peripherals[0]
-            : this.peripherals
     }
 
     public static Create() {
         return new (this.Class ?? this)()
     }
 
-    public async scanForPeripherals(uuids: string): Promise<Peripheral>
-    public async scanForPeripherals(uuids: string[]): Promise<Peripheral[]>
-
-    public async scanForPeripherals(uuids: string[] | string) {
-        this.isScanning = true
-        this.uuids = this.formatUuids(uuids)
-
-        return this.createStartScanningPromise()
+    public async scanForPeripheral(uuid: string) {
+        return (await this.scanForPeripherals([uuid]))[0]
     }
 
-    private formatUuids(uuids: string | string[]) {
-        switch (typeof uuids) {
-            case 'string':
-                this.resolveType = 'string'
-                return [uuids]
-            case 'object':
-                this.resolveType = 'array'
-                return uuids
-        }
+    public async scanForPeripherals(uuids: string[]) {
+        this.isScanning = true
+        this.uuids = uuids
+
+        return this.createStartScanningPromise()
     }
 
     private createStartScanningPromise() {
         return new Promise((resolve, reject) => {
             this.resolvePromise = resolve
             this.noble.startScanningAsync([], false).catch(reject)
-        }) as Promise<Peripheral[] | Peripheral>
+        }) as Promise<Peripheral[]>
     }
 
     private get noble() {
@@ -89,8 +71,8 @@ export default class BleScannerImpl implements BleScanner {
 }
 
 export interface BleScanner {
+    scanForPeripheral(uuid: string): Promise<Peripheral>
     scanForPeripherals(uuids: string[]): Promise<Peripheral[]>
-    scanForPeripherals(uuids: string): Promise<Peripheral>
 }
 
 export type BleScannerConstructor = new () => BleScanner

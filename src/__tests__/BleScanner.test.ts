@@ -4,9 +4,9 @@ import AbstractSpruceTest, {
     generateId,
 } from '@sprucelabs/test-utils'
 import noble from '@abandonware/noble'
-import BleScannerImpl from '../../BleScanner'
-import FakeNoble from '../../testDoubles/FakeNoble'
-import SpyBleScanner from '../../testDoubles/SpyBleScanner'
+import BleScannerImpl from '../BleScanner'
+import FakeNoble from '../testDoubles/FakeNoble'
+import SpyBleScanner from '../testDoubles/SpyBleScanner'
 
 export default class BleScannerTest extends AbstractSpruceTest {
     private static instance: SpyBleScanner
@@ -31,12 +31,6 @@ export default class BleScannerTest extends AbstractSpruceTest {
 
     @test()
     protected static async createSetsUpOnDiscoverForNoble() {
-        assert.isEqual(
-            this.noble.callsToOn.length,
-            1,
-            'BleScanner should have called noble.on(...)!'
-        )
-
         const { eventName, listener } = this.noble.callsToOn[0]
 
         assert.isEqual(
@@ -71,11 +65,6 @@ export default class BleScannerTest extends AbstractSpruceTest {
     protected static async scanCallsStartScanningAsync() {
         await this.scanForPeripherals()
 
-        assert.isTrue(
-            this.noble.didCallStartScanningAsync,
-            'scanForPeripherals should call noble.startScanningAsync!'
-        )
-
         const { uuids, allowDuplicates } =
             this.noble.callsToStartScanningAsync[0]
 
@@ -106,17 +95,6 @@ export default class BleScannerTest extends AbstractSpruceTest {
     protected static async scanReturnsPeripherals() {
         const peripherals = await this.scanForPeripherals()
 
-        assert.isArray(
-            peripherals,
-            'scanForPeripherals should return an array!'
-        )
-
-        assert.isLength(
-            peripherals,
-            1,
-            'scanForPeripherals should return peripherals!\n'
-        )
-
         assert.isEqualDeep(
             peripherals,
             this.noble.fakedPeripherals,
@@ -135,8 +113,8 @@ export default class BleScannerTest extends AbstractSpruceTest {
     }
 
     @test()
-    protected static async scanTakesStringUuidAndReturnsOnePeripheral() {
-        const peripheral = await this.scanForPeripherals(this.uuid)
+    protected static async scanForPeripheralTakesUuidAndReturnsPeripheral() {
+        const peripheral = await this.scanForPeripheral(this.uuid)
 
         assert.isFalse(
             peripheral instanceof Array,
@@ -150,23 +128,20 @@ export default class BleScannerTest extends AbstractSpruceTest {
         BleScannerImpl.noble = this.noble as unknown as typeof noble
     }
 
-    private static FakeNoble() {
-        return new FakeNoble()
+    private static async scanForPeripheral(uuid = this.uuid) {
+        return await this.instance.scanForPeripheral(uuid)
     }
 
-    private static async scanForPeripherals(
-        uuids: string[] | string = this.uuids
-    ) {
-        switch (typeof uuids) {
-            case 'string':
-                return await this.instance.scanForPeripherals(uuids)
-            case 'object':
-                return await this.instance.scanForPeripherals(uuids)
-        }
+    private static async scanForPeripherals(uuids = this.uuids) {
+        return await this.instance.scanForPeripherals(uuids)
     }
 
     private static get uuids() {
         return [this.uuid]
+    }
+
+    private static FakeNoble() {
+        return new FakeNoble()
     }
 
     private static BleScanner() {
