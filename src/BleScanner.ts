@@ -1,4 +1,5 @@
 import noble, { Peripheral } from '@abandonware/noble'
+import SpruceError from './errors/SpruceError'
 
 export default class BleScannerImpl implements BleScanner {
     public static Class?: BleScannerConstructor
@@ -7,7 +8,9 @@ export default class BleScannerImpl implements BleScanner {
     protected isScanning = false
     private peripherals: Peripheral[] = []
     private uuids: string[] = []
-    private resolvePromise?: (peripherals: Peripheral[]) => void
+    private timeoutMs?: number
+    private scanPromise!: ScanPromise
+    private resolvePromise!: (peripherals: Peripheral[]) => void
 
     protected constructor() {
         this.setupOnDiscover()
@@ -39,7 +42,7 @@ export default class BleScannerImpl implements BleScanner {
 
     private async stopScanning() {
         await this.noble.stopScanningAsync()
-        this.resolvePromise?.(this.peripherals)
+        this.resolvePromise(this.peripherals)
         this.isScanning = false
     }
 
@@ -47,22 +50,55 @@ export default class BleScannerImpl implements BleScanner {
         return new (this.Class ?? this)()
     }
 
-    public async scanForPeripheral(uuid: string) {
-        return (await this.scanForPeripherals([uuid]))[0]
+    public async scanForPeripheral(uuid: string, options?: ScanOptions) {
+        const peripherals = await this.scanForPeripherals([uuid], options)
+        return peripherals[0]
     }
 
-    public async scanForPeripherals(uuids: string[]) {
+    public async scanForPeripherals(uuids: string[], options?: ScanOptions) {
+        const { timeoutMs } = options ?? {}
+
         this.isScanning = true
         this.uuids = uuids
+        this.timeoutMs = timeoutMs
 
-        return this.createStartScanningPromise()
+        this.scanPromise = this.createScanPromise()
+
+        if (this.timeoutMs) {
+            return this.setTimeout()
+        }
+
+        return this.scanPromise
     }
 
-    private createStartScanningPromise() {
+    private createScanPromise() {
         return new Promise((resolve, reject) => {
             this.resolvePromise = resolve
             this.noble.startScanningAsync([], false).catch(reject)
-        }) as Promise<Peripheral[]>
+        }) as ScanPromise
+    }
+
+    private async setTimeout() {
+        const timeoutPromise = this.createTimeoutPromise()
+        return Promise.race([this.scanPromise, timeoutPromise]) as ScanPromise
+    }
+
+    private createTimeoutPromise() {
+        return new Promise((_, reject) => {
+            const timeoutId = setTimeout(() => {
+                reject(this.throwScanTimedOut())
+            }, this.timeoutMs)
+
+            void this.scanPromise.finally(() => clearTimeout(timeoutId))
+        })
+    }
+
+    private throwScanTimedOut() {
+        return new SpruceError({
+            code: 'SCAN_TIMED_OUT',
+            uuids: this.uuids,
+            timeoutMs: this.timeoutMs!,
+        })
     }
 
     private get noble() {
@@ -71,8 +107,18 @@ export default class BleScannerImpl implements BleScanner {
 }
 
 export interface BleScanner {
-    scanForPeripheral(uuid: string): Promise<Peripheral>
-    scanForPeripherals(uuids: string[]): Promise<Peripheral[]>
+    scanForPeripheral(uuid: string, options?: ScanOptions): Promise<Peripheral>
+
+    scanForPeripherals(
+        uuids: string[],
+        options?: ScanOptions
+    ): Promise<Peripheral[]>
 }
 
 export type BleScannerConstructor = new () => BleScanner
+
+export interface ScanOptions {
+    timeoutMs?: number
+}
+
+export type ScanPromise = Promise<Peripheral[]>

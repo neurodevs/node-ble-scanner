@@ -1,34 +1,32 @@
 import { generateId } from '@sprucelabs/test-utils'
 import { Peripheral } from '@abandonware/noble'
-import { BleScanner } from '../BleScanner'
+import { BleScanner, ScanOptions } from '../BleScanner'
 import FakePeripheral from './FakePeripheral'
 
 export default class FakeBleScanner implements BleScanner {
     public static fakedPeripherals: FakePeripheral[] = []
 
-    public callsToScanForPeripheral: string[] = []
-    public callsToScanForPeripherals: string[][] = []
+    public callsToScanForPeripheral: FakeScanForPeripheralCall[] = []
+    public callsToScanForPeripherals: FakeScanForPeripheralsCall[] = []
 
-    public async scanForPeripheral(uuid: string) {
-        this.callsToScanForPeripheral.push(uuid)
+    public async scanForPeripheral(uuid: string, options?: ScanOptions) {
+        this.callsToScanForPeripheral.push({ uuid, options })
 
         return this.fakedPeripherals.find(
             (peripheral) => peripheral.uuid === uuid
         ) as unknown as Peripheral
     }
 
-    public async scanForPeripherals(uuids: string[]) {
-        this.callsToScanForPeripherals.push(uuids)
+    public async scanForPeripherals(uuids: string[], options?: ScanOptions) {
+        this.callsToScanForPeripherals.push({ uuids, options })
 
         return this.fakedPeripherals.filter((peripheral) =>
             uuids.includes(peripheral.uuid)
         ) as unknown as Peripheral[]
     }
 
-    public static setFakedPeripherals(uuids?: string[]) {
-        this.fakedPeripherals = this.createFakePeripherals(
-            uuids ?? this.generateRandomUuids()
-        )
+    public static setFakedPeripherals(uuids = this.generateRandomUuids()) {
+        this.fakedPeripherals = this.createFakePeripherals(uuids)
     }
 
     public static createFakePeripherals(uuids: string[]) {
@@ -48,4 +46,14 @@ export default class FakeBleScanner implements BleScanner {
     private get fakedPeripherals() {
         return FakeBleScanner.fakedPeripherals
     }
+}
+
+export interface FakeScanForPeripheralCall {
+    uuid: string
+    options?: ScanOptions
+}
+
+export interface FakeScanForPeripheralsCall {
+    uuids: string[]
+    options?: ScanOptions
 }
