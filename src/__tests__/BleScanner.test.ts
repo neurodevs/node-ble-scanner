@@ -182,7 +182,6 @@ export default class BleScannerTest extends AbstractSpruceTest {
     }
 
     private static BleScanner(options?: BleScannerOptions) {
-        debugger
         return BleScannerImpl.Create(options) as SpyBleScanner
     }
 }

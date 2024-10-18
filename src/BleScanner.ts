@@ -16,7 +16,6 @@ export default class BleScannerImpl implements BleScanner {
         const { defaultTimeoutMs } = options ?? {}
         this.timeoutMs = defaultTimeoutMs
 
-        debugger
         this.setupOnDiscover()
     }
 
@@ -51,7 +50,6 @@ export default class BleScannerImpl implements BleScanner {
     }
 
     public static Create(options?: BleScannerOptions) {
-        debugger
         return new (this.Class ?? this)(options)
     }
 
