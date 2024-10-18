@@ -8,6 +8,7 @@ export default class FakeBleScanner implements BleScanner {
 
     public callsToScanForPeripheral: FakeScanForPeripheralCall[] = []
     public callsToScanForPeripherals: FakeScanForPeripheralsCall[] = []
+    public numCallsToStopScanning = 0
 
     public async scanForPeripheral(uuid: string, options?: ScanOptions) {
         this.callsToScanForPeripheral.push({ uuid, options })
@@ -23,6 +24,10 @@ export default class FakeBleScanner implements BleScanner {
         return this.fakedPeripherals.filter((peripheral) =>
             uuids.includes(peripheral.uuid)
         ) as unknown as Peripheral[]
+    }
+
+    public async stopScanning() {
+        this.numCallsToStopScanning++
     }
 
     public static setFakedPeripherals(uuids = this.generateRandomUuids()) {

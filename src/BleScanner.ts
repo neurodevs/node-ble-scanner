@@ -43,7 +43,7 @@ export default class BleScannerImpl implements BleScanner {
         return this.uuids.length === this.peripherals.length
     }
 
-    private async stopScanning() {
+    public async stopScanning() {
         await this.noble.stopScanningAsync()
         this.resolvePromise(this.peripherals)
         this.isScanning = false
@@ -116,6 +116,8 @@ export interface BleScanner {
         uuids: string[],
         options?: ScanOptions
     ): Promise<Peripheral[]>
+
+    stopScanning(): Promise<void>
 }
 
 export type BleScannerConstructor = new (

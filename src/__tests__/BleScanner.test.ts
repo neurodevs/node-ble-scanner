@@ -147,6 +147,19 @@ export default class BleScannerTest extends AbstractSpruceTest {
         assert.isEqual(timeoutMs, this.timeoutMs)
     }
 
+    @test()
+    protected static async canStopScanningEarly() {
+        void this.scanForPeripherals()
+        await this.wait(1)
+
+        await this.stopScanning()
+
+        assert.isFalse(
+            this.instance.getIsScanning(),
+            'stopScanning should set noble.isScanning to false!'
+        )
+    }
+
     private static setupFakeNoble() {
         this.noble = this.FakeNoble()
         this.fakePeripherals()
@@ -169,6 +182,10 @@ export default class BleScannerTest extends AbstractSpruceTest {
         options?: ScanOptions
     ) {
         return await this.instance.scanForPeripherals(uuids, options)
+    }
+
+    private static async stopScanning() {
+        await this.instance.stopScanning()
     }
 
     private static get uuids() {
