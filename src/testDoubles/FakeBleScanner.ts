@@ -6,9 +6,14 @@ import FakePeripheral from './FakePeripheral'
 export default class FakeBleScanner implements BleScanner {
     public static fakedPeripherals: FakePeripheral[] = []
 
-    public callsToScanForPeripheral: FakeScanForPeripheralCall[] = []
-    public callsToScanForPeripherals: FakeScanForPeripheralsCall[] = []
-    public numCallsToStopScanning = 0
+    public static numCallsToConstructor = 0
+    public static callsToScanForPeripheral: FakeScanForPeripheralCall[] = []
+    public static callsToScanForPeripherals: FakeScanForPeripheralsCall[] = []
+    public static numCallsToStopScanning = 0
+
+    public constructor() {
+        FakeBleScanner.numCallsToConstructor++
+    }
 
     public async scanForPeripheral(uuid: string, options?: ScanOptions) {
         this.callsToScanForPeripheral.push({ uuid, options })
@@ -27,7 +32,7 @@ export default class FakeBleScanner implements BleScanner {
     }
 
     public async stopScanning() {
-        this.numCallsToStopScanning++
+        FakeBleScanner.numCallsToStopScanning++
     }
 
     public static setFakedPeripherals(uuids = this.generateRandomUuids()) {
@@ -48,8 +53,24 @@ export default class FakeBleScanner implements BleScanner {
         return Array.from({ length: num }, () => generateId())
     }
 
+    private get callsToScanForPeripheral() {
+        return FakeBleScanner.callsToScanForPeripheral
+    }
+
+    private get callsToScanForPeripherals() {
+        return FakeBleScanner.callsToScanForPeripherals
+    }
+
     private get fakedPeripherals() {
         return FakeBleScanner.fakedPeripherals
+    }
+
+    public static resetTestDouble() {
+        FakeBleScanner.fakedPeripherals = []
+        FakeBleScanner.numCallsToConstructor = 0
+        FakeBleScanner.callsToScanForPeripheral = []
+        FakeBleScanner.callsToScanForPeripherals = []
+        FakeBleScanner.numCallsToStopScanning = 0
     }
 }
 
