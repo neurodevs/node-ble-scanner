@@ -160,6 +160,13 @@ export default class BleScannerTest extends AbstractSpruceTest {
         )
     }
 
+    @test()
+    protected static async callingTwiceClearsPeripherals() {
+        await this.scanForPeripherals()
+        const peripherals = await this.scanForPeripherals()
+        assert.isEqual(peripherals.length, 1, 'Should have found 1 peripheral!')
+    }
+
     private static setupFakeNoble() {
         this.noble = this.FakeNoble()
         this.fakePeripherals()

@@ -56,6 +56,7 @@ export default class BleScannerImpl implements BleScanner {
         const { timeoutMs } = options ?? {}
 
         this.isScanning = true
+        this.peripherals = []
         this.uuids = uuids
         this.timeoutMs = timeoutMs
 
