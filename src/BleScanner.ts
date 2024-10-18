@@ -6,13 +6,17 @@ export default class BleScannerImpl implements BleScanner {
     public static noble = noble
 
     protected isScanning = false
+    protected timeoutMs?: number
     private peripherals: Peripheral[] = []
     private uuids: string[] = []
-    private timeoutMs?: number
     private scanPromise!: ScanPromise
     private resolvePromise!: (peripherals: Peripheral[]) => void
 
-    protected constructor() {
+    protected constructor(options?: BleScannerOptions) {
+        const { defaultTimeoutMs } = options ?? {}
+        this.timeoutMs = defaultTimeoutMs
+
+        debugger
         this.setupOnDiscover()
     }
 
@@ -46,8 +50,9 @@ export default class BleScannerImpl implements BleScanner {
         this.isScanning = false
     }
 
-    public static Create() {
-        return new (this.Class ?? this)()
+    public static Create(options?: BleScannerOptions) {
+        debugger
+        return new (this.Class ?? this)(options)
     }
 
     public async scanForPeripheral(uuid: string, options?: ScanOptions) {
@@ -115,7 +120,13 @@ export interface BleScanner {
     ): Promise<Peripheral[]>
 }
 
-export type BleScannerConstructor = new () => BleScanner
+export type BleScannerConstructor = new (
+    options?: BleScannerOptions
+) => BleScanner
+
+export interface BleScannerOptions {
+    defaultTimeoutMs?: number
+}
 
 export interface ScanOptions {
     timeoutMs?: number

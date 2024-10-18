@@ -5,7 +5,7 @@ import AbstractSpruceTest, {
     errorAssert,
 } from '@sprucelabs/test-utils'
 import noble from '@abandonware/noble'
-import BleScannerImpl, { ScanOptions } from '../BleScanner'
+import BleScannerImpl, { BleScannerOptions, ScanOptions } from '../BleScanner'
 import FakeNoble from '../testDoubles/FakeNoble'
 import SpyBleScanner from '../testDoubles/SpyBleScanner'
 
@@ -124,18 +124,27 @@ export default class BleScannerTest extends AbstractSpruceTest {
     }
 
     @test()
-    protected static async scanForPeripheralAcceptsOptionalTimeoutMs() {
-        const timeoutMs = 10
+    protected static async throwsIfScanTimesOut() {
         const invalidUuid = generateId()
 
         const err = await assert.doesThrowAsync(
-            async () => await this.scanForPeripheral(invalidUuid, { timeoutMs })
+            async () =>
+                await this.scanForPeripheral(invalidUuid, {
+                    timeoutMs: this.timeoutMs,
+                })
         )
 
         errorAssert.assertError(err, 'SCAN_TIMED_OUT', {
             uuids: [invalidUuid],
-            timeoutMs,
+            timeoutMs: this.timeoutMs,
         })
+    }
+
+    @test()
+    protected static async createAcceptsOptionalDefaultTimeoutMs() {
+        const instance = this.BleScanner({ defaultTimeoutMs: this.timeoutMs })
+        const timeoutMs = instance.getTimeoutMs()
+        assert.isEqual(timeoutMs, this.timeoutMs)
     }
 
     private static setupFakeNoble() {
@@ -166,11 +175,14 @@ export default class BleScannerTest extends AbstractSpruceTest {
         return [this.uuid]
     }
 
+    private static readonly timeoutMs = 10
+
     private static FakeNoble() {
         return new FakeNoble()
     }
 
-    private static BleScanner() {
-        return BleScannerImpl.Create() as SpyBleScanner
+    private static BleScanner(options?: BleScannerOptions) {
+        debugger
+        return BleScannerImpl.Create(options) as SpyBleScanner
     }
 }
