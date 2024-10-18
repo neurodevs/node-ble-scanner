@@ -43,12 +43,6 @@ export default class BleScannerImpl implements BleScanner {
         return this.uuids.length === this.peripherals.length
     }
 
-    public async stopScanning() {
-        await this.noble.stopScanningAsync()
-        this.resolvePromise(this.peripherals)
-        this.isScanning = false
-    }
-
     public static Create(options?: BleScannerOptions) {
         return new (this.Class ?? this)(options)
     }
@@ -102,6 +96,12 @@ export default class BleScannerImpl implements BleScanner {
             uuids: this.uuids,
             timeoutMs: this.timeoutMs!,
         })
+    }
+
+    public async stopScanning() {
+        await this.noble.stopScanningAsync()
+        this.resolvePromise(this.peripherals)
+        this.isScanning = false
     }
 
     private get noble() {
