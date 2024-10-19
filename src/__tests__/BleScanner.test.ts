@@ -5,7 +5,10 @@ import AbstractSpruceTest, {
     errorAssert,
 } from '@sprucelabs/test-utils'
 import noble from '@abandonware/noble'
-import BleScannerImpl, { BleScannerOptions, ScanOptions } from '../BleScanner'
+import BleScannerImpl, {
+    BleScannerOptions,
+    ScanForPeripheralOptions,
+} from '../BleScanner'
 import FakeNoble from '../testDoubles/FakeNoble'
 import SpyBleScanner from '../testDoubles/SpyBleScanner'
 
@@ -179,14 +182,14 @@ export default class BleScannerTest extends AbstractSpruceTest {
 
     private static async scanForPeripheral(
         uuid = this.uuid,
-        options?: ScanOptions
+        options?: ScanForPeripheralOptions
     ) {
         return await this.instance.scanForPeripheral(uuid, options)
     }
 
     private static async scanForPeripherals(
         uuids = this.uuids,
-        options?: ScanOptions
+        options?: ScanForPeripheralOptions
     ) {
         return await this.instance.scanForPeripherals(uuids, options)
     }

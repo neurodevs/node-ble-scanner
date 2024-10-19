@@ -1,6 +1,6 @@
 import { generateId } from '@sprucelabs/test-utils'
 import { Peripheral } from '@abandonware/noble'
-import { BleScanner, ScanOptions } from '../BleScanner'
+import { BleScanner, ScanForPeripheralOptions } from '../BleScanner'
 import FakePeripheral from './FakePeripheral'
 
 export default class FakeBleScanner implements BleScanner {
@@ -15,7 +15,10 @@ export default class FakeBleScanner implements BleScanner {
         FakeBleScanner.numCallsToConstructor++
     }
 
-    public async scanForPeripheral(uuid: string, options?: ScanOptions) {
+    public async scanForPeripheral(
+        uuid: string,
+        options?: ScanForPeripheralOptions
+    ) {
         this.callsToScanForPeripheral.push({ uuid, options })
 
         return this.fakedPeripherals.find(
@@ -23,7 +26,10 @@ export default class FakeBleScanner implements BleScanner {
         ) as unknown as Peripheral
     }
 
-    public async scanForPeripherals(uuids: string[], options?: ScanOptions) {
+    public async scanForPeripherals(
+        uuids: string[],
+        options?: ScanForPeripheralOptions
+    ) {
         this.callsToScanForPeripherals.push({ uuids, options })
 
         return this.fakedPeripherals.filter((peripheral) =>
@@ -76,10 +82,10 @@ export default class FakeBleScanner implements BleScanner {
 
 export interface FakeScanForPeripheralCall {
     uuid: string
-    options?: ScanOptions
+    options?: ScanForPeripheralOptions
 }
 
 export interface FakeScanForPeripheralsCall {
     uuids: string[]
-    options?: ScanOptions
+    options?: ScanForPeripheralOptions
 }

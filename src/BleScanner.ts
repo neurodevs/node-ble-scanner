@@ -47,12 +47,18 @@ export default class BleScannerImpl implements BleScanner {
         return new (this.Class ?? this)(options)
     }
 
-    public async scanForPeripheral(uuid: string, options?: ScanOptions) {
+    public async scanForPeripheral(
+        uuid: string,
+        options?: ScanForPeripheralOptions
+    ) {
         const peripherals = await this.scanForPeripherals([uuid], options)
         return peripherals[0]
     }
 
-    public async scanForPeripherals(uuids: string[], options?: ScanOptions) {
+    public async scanForPeripherals(
+        uuids: string[],
+        options?: ScanForPeripheralOptions
+    ) {
         const { timeoutMs } = options ?? {}
 
         this.isScanning = true
@@ -111,11 +117,14 @@ export default class BleScannerImpl implements BleScanner {
 }
 
 export interface BleScanner {
-    scanForPeripheral(uuid: string, options?: ScanOptions): Promise<Peripheral>
+    scanForPeripheral(
+        uuid: string,
+        options?: ScanForPeripheralOptions
+    ): Promise<Peripheral>
 
     scanForPeripherals(
         uuids: string[],
-        options?: ScanOptions
+        options?: ScanForPeripheralOptions
     ): Promise<Peripheral[]>
 
     stopScanning(): Promise<void>
@@ -129,7 +138,7 @@ export interface BleScannerOptions {
     defaultTimeoutMs?: number
 }
 
-export interface ScanOptions {
+export interface ScanForPeripheralOptions {
     timeoutMs?: number
 }
 
