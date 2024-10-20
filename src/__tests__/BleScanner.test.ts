@@ -181,6 +181,18 @@ export default class BleScannerTest extends AbstractSpruceTest {
         )
     }
 
+    @test()
+    protected static async canScanByName() {
+        const name = 'Fake Device'
+        const peripheral = await this.scanForName(name)
+
+        assert.isEqualDeep(
+            peripheral,
+            this.noble.fakedPeripherals[0],
+            'scanForPeripherals should return the faked peripherals!'
+        )
+    }
+
     private static setupFakeNoble() {
         this.noble = this.FakeNoble()
         this.fakePeripherals()
@@ -207,6 +219,10 @@ export default class BleScannerTest extends AbstractSpruceTest {
         options?: ScanForPeripheralOptions
     ) {
         return await this.instance.scanForPeripherals(uuids, options)
+    }
+
+    private static async scanForName(name: string) {
+        return await this.instance.scanForName(name)
     }
 
     private static async stopScanning() {

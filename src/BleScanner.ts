@@ -112,6 +112,13 @@ export default class BleScannerImpl implements BleScanner {
         })
     }
 
+    public async scanForName(name: string) {
+        const peripherals = await this.scanAll()
+        return peripherals.find(
+            (peripheral) => peripheral.advertisement.localName === name
+        ) as Peripheral
+    }
+
     public async stopScanning() {
         this.isScanning = false
         await this.noble.stopScanningAsync()
@@ -135,6 +142,8 @@ export interface BleScanner {
         uuids: string[],
         options?: ScanForPeripheralOptions
     ): Promise<Peripheral[]>
+
+    scanForName(name: string): Promise<Peripheral>
 
     stopScanning(): Promise<void>
 }
