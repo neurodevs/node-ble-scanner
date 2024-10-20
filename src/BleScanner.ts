@@ -11,6 +11,7 @@ export default class BleScannerImpl implements BleScanner {
     private uuids: string[] = []
     private scanPromise!: ScanPromise
     private resolvePromise!: (peripherals: Peripheral[]) => void
+    private rejectPromise!: (error: any) => void
 
     protected constructor(options?: BleScannerOptions) {
         const { defaultTimeoutMs } = options ?? {}
@@ -26,7 +27,7 @@ export default class BleScannerImpl implements BleScanner {
     private async handleOnDiscover(peripheral: Peripheral) {
         const { uuid } = peripheral
 
-        if (this.isTargetPeripheral(uuid)) {
+        if (this.uuids.length === 0 || this.isTargetPeripheral(uuid)) {
             this.peripherals.push(peripheral)
 
             if (this.allPeripheralsFound) {
@@ -40,11 +41,18 @@ export default class BleScannerImpl implements BleScanner {
     }
 
     private get allPeripheralsFound() {
-        return this.uuids.length === this.peripherals.length
+        return (
+            this.uuids.length === 0 ||
+            this.uuids.length === this.peripherals.length
+        )
     }
 
     public static Create(options?: BleScannerOptions) {
         return new (this.Class ?? this)(options)
+    }
+
+    public async scanAll() {
+        return this.createScanPromise()
     }
 
     public async scanForPeripheral(
@@ -78,6 +86,7 @@ export default class BleScannerImpl implements BleScanner {
     private createScanPromise() {
         return new Promise((resolve, reject) => {
             this.resolvePromise = resolve
+            this.rejectPromise = reject
             this.noble.startScanningAsync([], false).catch(reject)
         }) as ScanPromise
     }
@@ -107,8 +116,13 @@ export default class BleScannerImpl implements BleScanner {
 
     public async stopScanning() {
         await this.noble.stopScanningAsync()
-        this.resolvePromise(this.peripherals)
         this.isScanning = false
+
+        if (this.peripherals.length > 0) {
+            this.resolvePromise(this.peripherals)
+        } else {
+            this.rejectPromise(this.throwScanTimedOut())
+        }
     }
 
     private get noble() {
@@ -117,6 +131,8 @@ export default class BleScannerImpl implements BleScanner {
 }
 
 export interface BleScanner {
+    scanAll(): Promise<Peripheral[]>
+
     scanForPeripheral(
         uuid: string,
         options?: ScanForPeripheralOptions

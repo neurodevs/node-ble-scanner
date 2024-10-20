@@ -7,12 +7,18 @@ export default class FakeBleScanner implements BleScanner {
     public static fakedPeripherals: FakePeripheral[] = []
 
     public static numCallsToConstructor = 0
+    public static numCallsToScanAll = 0
     public static callsToScanForPeripheral: FakeScanForPeripheralCall[] = []
     public static callsToScanForPeripherals: FakeScanForPeripheralsCall[] = []
     public static numCallsToStopScanning = 0
 
     public constructor() {
         FakeBleScanner.numCallsToConstructor++
+    }
+
+    public async scanAll() {
+        FakeBleScanner.numCallsToScanAll++
+        return this.fakedPeripherals as unknown as Peripheral[]
     }
 
     public async scanForPeripheral(

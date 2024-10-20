@@ -170,6 +170,17 @@ export default class BleScannerTest extends AbstractSpruceTest {
         assert.isEqual(peripherals.length, 1, 'Should have found 1 peripheral!')
     }
 
+    @test()
+    protected static async canScanForAllPeripherals() {
+        const peripherals = await this.scanAll()
+
+        assert.isEqualDeep(
+            peripherals,
+            this.noble.fakedPeripherals,
+            'scanAll should return all faked peripherals!'
+        )
+    }
+
     private static setupFakeNoble() {
         this.noble = this.FakeNoble()
         this.fakePeripherals()
@@ -178,6 +189,10 @@ export default class BleScannerTest extends AbstractSpruceTest {
 
     private static fakePeripherals(uuids = this.uuids) {
         this.noble.fakePeripherals(uuids)
+    }
+
+    private static async scanAll() {
+        return await this.instance.scanAll()
     }
 
     private static async scanForPeripheral(
