@@ -10,6 +10,8 @@ export default class FakeBleScanner implements BleScanner {
     public static numCallsToScanAll = 0
     public static callsToScanForPeripheral: FakeScanForPeripheralCall[] = []
     public static callsToScanForPeripherals: FakeScanForPeripheralsCall[] = []
+    public static callsToScanForName: string[] = []
+    public static callsToScanForNames: string[][] = []
     public static numCallsToStopScanning = 0
 
     public constructor() {
@@ -43,6 +45,22 @@ export default class FakeBleScanner implements BleScanner {
         ) as unknown as Peripheral[]
     }
 
+    public async scanForName(name: string) {
+        this.callsToScanForName.push(name)
+
+        return this.fakedPeripherals.find(
+            (peripheral) => peripheral.advertisement.localName === name
+        ) as unknown as Peripheral
+    }
+
+    public async scanForNames(names: string[]) {
+        this.callsToScanForNames.push(names)
+
+        return this.fakedPeripherals.filter((peripheral) =>
+            names.includes(peripheral.advertisement.localName)
+        ) as unknown as Peripheral[]
+    }
+
     public async stopScanning() {
         FakeBleScanner.numCallsToStopScanning++
     }
@@ -71,6 +89,14 @@ export default class FakeBleScanner implements BleScanner {
 
     private get callsToScanForPeripherals() {
         return FakeBleScanner.callsToScanForPeripherals
+    }
+
+    private get callsToScanForName() {
+        return FakeBleScanner.callsToScanForName
+    }
+
+    private get callsToScanForNames() {
+        return FakeBleScanner.callsToScanForNames
     }
 
     private get fakedPeripherals() {

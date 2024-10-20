@@ -182,13 +182,24 @@ export default class BleScannerTest extends AbstractSpruceTest {
     }
 
     @test()
-    protected static async canScanByName() {
+    protected static async canScanForPeripheralByName() {
         const name = 'Fake Device'
         const peripheral = await this.scanForName(name)
 
         assert.isEqualDeep(
             peripheral,
             this.noble.fakedPeripherals[0],
+            'scanForPeripherals should return the faked peripherals!'
+        )
+    }
+
+    @test()
+    protected static async canScanForPeripheralsByNames() {
+        const peripherals = await this.scanForNames(['Fake Device'])
+
+        assert.isEqualDeep(
+            peripherals,
+            this.noble.fakedPeripherals,
             'scanForPeripherals should return the faked peripherals!'
         )
     }
@@ -223,6 +234,10 @@ export default class BleScannerTest extends AbstractSpruceTest {
 
     private static async scanForName(name: string) {
         return await this.instance.scanForName(name)
+    }
+
+    private static async scanForNames(names: string[]) {
+        return await this.instance.scanForNames(names)
     }
 
     private static async stopScanning() {
