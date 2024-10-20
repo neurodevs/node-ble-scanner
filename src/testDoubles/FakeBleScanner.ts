@@ -23,10 +23,7 @@ export default class FakeBleScanner implements BleScanner {
         return this.fakedPeripherals as unknown as Peripheral[]
     }
 
-    public async scanForUuid(
-        uuid: string,
-        options?: ScanOptions
-    ) {
+    public async scanForUuid(uuid: string, options?: ScanOptions) {
         this.callsToScanForPeripheral.push({ uuid, options })
 
         return this.fakedPeripherals.find(
@@ -34,10 +31,7 @@ export default class FakeBleScanner implements BleScanner {
         ) as unknown as Peripheral
     }
 
-    public async scanForUuids(
-        uuids: string[],
-        options?: ScanOptions
-    ) {
+    public async scanForUuids(uuids: string[], options?: ScanOptions) {
         this.callsToScanForPeripherals.push({ uuids, options })
 
         return this.fakedPeripherals.filter((peripheral) =>
@@ -104,11 +98,11 @@ export default class FakeBleScanner implements BleScanner {
     }
 
     public static resetTestDouble() {
-        FakeBleScanner.fakedPeripherals = []
-        FakeBleScanner.numCallsToConstructor = 0
-        FakeBleScanner.callsToScanForPeripheral = []
-        FakeBleScanner.callsToScanForPeripherals = []
-        FakeBleScanner.numCallsToStopScanning = 0
+        this.fakedPeripherals = []
+        this.numCallsToConstructor = 0
+        this.callsToScanForPeripheral = []
+        this.callsToScanForPeripherals = []
+        this.numCallsToStopScanning = 0
     }
 }
 

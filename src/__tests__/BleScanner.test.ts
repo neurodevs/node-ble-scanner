@@ -53,7 +53,7 @@ export default class BleScannerTest extends AbstractSpruceTest {
             'noble.isScanning should be false before calling scanForPeripherals!'
         )
 
-        void this.scanForPeripherals(['invalid-uuid'])
+        void this.scanForUuids(['invalid-uuid'])
         await this.wait(1)
 
         assert.isTrue(
@@ -64,7 +64,7 @@ export default class BleScannerTest extends AbstractSpruceTest {
 
     @test()
     protected static async scanCallsStartScanningAsync() {
-        await this.scanForPeripherals()
+        await this.scanForUuids()
 
         const { uuids, allowDuplicates } =
             this.noble.callsToStartScanningAsync[0]
@@ -84,7 +84,7 @@ export default class BleScannerTest extends AbstractSpruceTest {
 
     @test()
     protected static async scanSetsIsScanningFalseOnceAllUuidsFound() {
-        await this.scanForPeripherals()
+        await this.scanForUuids()
 
         assert.isFalse(
             this.instance.getIsScanning(),
@@ -94,7 +94,7 @@ export default class BleScannerTest extends AbstractSpruceTest {
 
     @test()
     protected static async scanReturnsPeripherals() {
-        const peripherals = await this.scanForPeripherals()
+        const peripherals = await this.scanForUuids()
 
         assert.isEqualDeep(
             peripherals,
@@ -105,7 +105,7 @@ export default class BleScannerTest extends AbstractSpruceTest {
 
     @test()
     protected static async scanCallsStopScanningWhenDone() {
-        await this.scanForPeripherals()
+        await this.scanForUuids()
 
         assert.isTrue(
             this.noble.didCallStopScanningAsync,
@@ -115,7 +115,7 @@ export default class BleScannerTest extends AbstractSpruceTest {
 
     @test()
     protected static async scanForPeripheralTakesUuidAndReturnsPeripheral() {
-        const peripheral = await this.scanForPeripheral(this.uuid)
+        const peripheral = await this.scanForUuid(this.uuid)
 
         assert.isFalse(
             peripheral instanceof Array,
@@ -129,7 +129,7 @@ export default class BleScannerTest extends AbstractSpruceTest {
 
         const err = await assert.doesThrowAsync(
             async () =>
-                await this.scanForPeripheral(invalidUuid, {
+                await this.scanForUuid(invalidUuid, {
                     timeoutMs: this.timeoutMs,
                 })
         )
@@ -149,7 +149,7 @@ export default class BleScannerTest extends AbstractSpruceTest {
 
     @test()
     protected static async canStopScanningEarly() {
-        void this.scanForPeripherals()
+        void this.scanForUuids()
         await this.wait(1)
 
         await this.stopScanning()
@@ -162,8 +162,8 @@ export default class BleScannerTest extends AbstractSpruceTest {
 
     @test()
     protected static async callingTwiceClearsPeripherals() {
-        await this.scanForPeripherals()
-        const peripherals = await this.scanForPeripherals()
+        await this.scanForUuids()
+        const peripherals = await this.scanForUuids()
         assert.isEqual(peripherals.length, 1, 'Should have found 1 peripheral!')
     }
 
@@ -215,14 +215,11 @@ export default class BleScannerTest extends AbstractSpruceTest {
         return await this.instance.scanAll()
     }
 
-    private static async scanForPeripheral(
-        uuid = this.uuid,
-        options?: ScanOptions
-    ) {
+    private static async scanForUuid(uuid = this.uuid, options?: ScanOptions) {
         return await this.instance.scanForUuid(uuid, options)
     }
 
-    private static async scanForPeripherals(
+    private static async scanForUuids(
         uuids = this.uuids,
         options?: ScanOptions
     ) {
